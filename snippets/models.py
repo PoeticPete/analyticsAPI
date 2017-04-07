@@ -1,6 +1,7 @@
 from django.db import models
 from pygments.lexers import get_all_lexers
 from pygments.styles import get_all_styles
+from django.core import serializers
 
 LEXERS = [item for item in get_all_lexers() if item[1]]
 LANGUAGE_CHOICES = sorted([(item[1][0], item[0]) for item in LEXERS])
@@ -14,6 +15,10 @@ class Snippet(models.Model):
     linenos = models.BooleanField(default=False)
     language = models.CharField(choices=LANGUAGE_CHOICES, default='python', max_length=100)
     style = models.CharField(choices=STYLE_CHOICES, default='friendly', max_length=100)
+
+    def toJSONObject(self):
+        serialized_obj = serializers.serialize('json', [self, ])
+        return serialized_obj
 
     class Meta:
         ordering = ('created',)
@@ -153,3 +158,19 @@ class SystemOverview(models.Model):
     tdvv_count = models.IntegerField(default=0)
     tdvv_capacity = models.DecimalField(max_digits=15, decimal_places=10)
     records = models.ManyToManyField(SystemState, blank=True)
+
+    def toJSONObject(self):
+        serialized_obj = serializers.serialize('json', [SystemOverview, ])
+        return serialized_obj
+
+
+class Test(models.Model):
+    serial = models.IntegerField(default=0)
+    company = models.CharField(max_length=255, blank=True, null=True)
+    model = models.CharField(max_length=255, blank=True, null=True)
+    updated_date = models.DateTimeField(blank=True, null=True)
+
+    def toJSONObject(self):
+        serialized_obj = serializers.serialize('json', [Test, ])
+        return serialized_obj
+
