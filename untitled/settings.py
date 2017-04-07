@@ -25,7 +25,7 @@ SECRET_KEY = '3wr_nr5vi4121+x1#9$dwj8g(ww&-huu4a6v_n@k@1lp8xin!3'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['poeticpete.pythonanywhere.com']
 
 
 # Application definition
