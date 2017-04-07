@@ -1,8 +1,5 @@
 import csv
-from django.conf import settings
 from snippets.models import SystemOverview, SystemState
-
-settings.configure()
 
 
 with open('perform-summary.csv', 'r') as f:
