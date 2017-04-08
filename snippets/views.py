@@ -2,10 +2,13 @@ from rest_framework import status
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from snippets.models import Snippet
-from snippets.serializers import SnippetSerializer
+from snippets.serializers import SnippetSerializer, SystemSummarySerializer, SystemStateSerializer
 import logging, logging.handlers
 from snippets.models import SystemOverview, SystemState
 from django.core import serializers
+from django.forms.models import model_to_dict
+import json
+from django.http import HttpResponse
 
 
 
@@ -26,25 +29,29 @@ def snippet_detail(request, pk, format=None):
     """
     Retrieve a snippet instance.
     """
-    logging.info("getting snippet_detail")
-    params = request.GET
-    logging.info(request.GET)
-    logging.info("these are the parameters!")
-    for i in params.items():
-        logging.info(i[0])
-        logging.info(i[1])
-
-    logging.info("exit for")
+    # logging.info("getting snippet_detail")
+    # params = request.GET
+    # logging.info(request.GET)
+    # logging.info("these are the parameters!")
+    # for i in params.items():
+    #     logging.info(i[0])
+    #     logging.info(i[1])
+    #
+    # logging.info("exit for")
 
     try:
         # snippet = Snippet.objects.get(pk=pk)
-        snippet = Snippet.objects.get(code__startswith=pk)
+        snippet = Snippet.objects.filter(code__startswith=pk)
     except Snippet.DoesNotExist:
         return Response(status=status.HTTP_404_NOT_FOUND)
 
     if request.method == 'GET':
-        serializer = SnippetSerializer(snippet)
+        serializer = SnippetSerializer(snippet, many=True)
         return Response(serializer.data)
+
+    # my_model = SystemState.objects.filter(pk=pk)
+    # response = serializers.serialize("json", my_model, many=True)
+    # return HttpResponse(response, content_type='application/json')
 
 
 @api_view(['GET'])
@@ -52,24 +59,26 @@ def systemsummary(request, pk, format=None):
     """
     Retrieve a snippet instance.
     """
-    logging.info("getting system summary with %s", pk)
-    params = request.GET
-    logging.info(request.GET)
-    logging.info("these are the parameters!")
-    for i in params.items():
-        logging.info(i[0])
-        logging.info(i[1])
-
-    logging.info("exit for")
+    # logging.info("getting system summary with %s", pk)
+    # params = request.GET
+    # logging.info(request.GET)
+    # logging.info("these are the parameters!")
+    # for i in params.items():
+    #     logging.info(i[0])
+    #     logging.info(i[1])
+    #
+    # logging.info("exit for")
 
     try:
-        # snippet = Snippet.objects.get(pk=pk)
         obj = SystemOverview.objects.filter(serial=pk)
-    except Snippet.DoesNotExist:
+    except SystemOverview.DoesNotExist:
         return Response(status=status.HTTP_404_NOT_FOUND)
-
     if request.method == 'GET':
-        return Response(serializers.serialize("json", obj))
+        serializer = SystemSummarySerializer(obj, many=True)
+        return Response(serializer.data)
+        # return Response(serializers.serialize("json", obj))
+
+        # return Response(json.dumps(list(obj), indent=4))
 
 
 @api_view(['GET'])
@@ -77,21 +86,24 @@ def systemstates(request, pk, format=None):
     """
     Retrieve a snippet instance.
     """
-    logging.info("getting system state with %s", pk)
-    params = request.GET
-    logging.info(request.GET)
-    logging.info("these are the GET parameters!")
-    for i in params.items():
-        logging.info(i[0])
-        logging.info(i[1])
 
-    logging.info("exit for")
+    # try:
+    #     # snippet = Snippet.objects.get(pk=pk)
+    #     obj = SystemState.objects.filter(systemId=pk)
+    # except SystemState.DoesNotExist:
+    #     return Response(status=status.HTTP_404_NOT_FOUND)
+    #
+    # if request.method == 'GET':
+    #     return Response(serializers.serialize("json", [obj,]))
 
     try:
-        # snippet = Snippet.objects.get(pk=pk)
         obj = SystemState.objects.filter(systemId=pk)
-    except Snippet.DoesNotExist:
+    except SystemState.DoesNotExist:
         return Response(status=status.HTTP_404_NOT_FOUND)
-
     if request.method == 'GET':
-        return Response(serializers.serialize("json", obj))
+        serializer = SystemStateSerializer(obj, many=True)
+        return Response(serializer.data)
+
+    # my_model = SystemState.objects.filter(systemId=pk)
+    # response = serializers.serialize("json", my_model)
+    # return HttpResponse(response, content_type='application/json')
