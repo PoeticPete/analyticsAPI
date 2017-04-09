@@ -96,7 +96,7 @@ def systemstates(request, pk, format=None):
         logging.info(i[1])
 
     logging.info("exit for")
-    if len(params.items()) > 0:
+    if len(params) > 0:
         obj = SystemState.objects.filter(systemId=pk)
         logging.info(obj)
         # response = serializers.serialize("json", list(obj), fields=('from_date'))
