@@ -2,7 +2,7 @@ from rest_framework import status
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from snippets.models import Snippet
-from snippets.serializers import SnippetSerializer, SystemSummarySerializer, SystemStateSerializer
+from snippets.serializers import SnippetSerializer, SystemSummarySerializer, SystemStateSerializer, SystemStateSerializerCustom
 import logging, logging.handlers
 from snippets.models import SystemOverview, SystemState
 from django.core import serializers
@@ -86,6 +86,24 @@ def systemstates(request, pk, format=None):
     """
     Retrieve a snippet instance.
     """
+
+    logging.info("getting system states with %s", pk)
+    params = request.GET
+    logging.info(request.GET)
+    logging.info("these are the parameters!")
+    for i in params.items():
+        logging.info(i[0])
+        logging.info(i[1])
+
+    logging.info("exit for")
+    if len(params.items()) > 0:
+        obj = SystemState.objects.filter(systemId=pk)
+        logging.info(obj)
+        # response = serializers.serialize("json", list(obj), fields=('from_date'))
+        # return HttpResponse(response, content_type='application/json')
+        serializer = SystemStateSerializerCustom(obj, many=True)
+        return Response(serializer.data)
+
 
     # try:
     #     # snippet = Snippet.objects.get(pk=pk)

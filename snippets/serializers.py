@@ -16,3 +16,8 @@ class SystemStateSerializer(serializers.ModelSerializer):
     class Meta:
         model = SystemState
         fields = '__all__'
+
+class SystemStateSerializerCustom(serializers.ModelSerializer):
+    class Meta:
+        model = SystemState
+        fields = ('from_date', 'io_total_size_avg_kb')
