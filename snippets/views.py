@@ -91,12 +91,15 @@ def systemstates(request, pk, format=None):
     params = request.GET
     logging.info(request.GET)
     logging.info("these are the parameters!")
+    count = 0
     for i in params.items():
+        count += 1
         logging.info(i[0])
         logging.info(i[1])
 
     logging.info("exit for")
-    if len(list(params)) > 0:
+
+    if count > 0:
         obj = SystemState.objects.filter(systemId=pk)
         logging.info(obj)
         # response = serializers.serialize("json", list(obj), fields=('from_date'))
